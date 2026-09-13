@@ -1,0 +1,101 @@
+.services-header-section {
+  padding: 4.5rem 0 2.5rem 0;
+  text-align: center;
+  position: relative;
+}
+
+.header-badge {
+  margin-bottom: 1.25rem;
+}
+
+.services-main-heading {
+  font-size: 2.8rem;
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .services-main-heading {
+    font-size: 3.8rem;
+  }
+}
+
+.services-main-desc {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.services-grid-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 640px) {
+  .services-grid-page {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .services-grid-page {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Custom Appliance Card */
+.custom-appliance-card {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-color: var(--border-cyan-glow);
+}
+
+@media (min-width: 992px) {
+  .custom-appliance-card {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.custom-card-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.75rem;
+  max-width: 800px;
+}
+
+.custom-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid var(--border-cyan-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-cyan);
+  flex-shrink: 0;
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.2);
+}
+
+.custom-title {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+}
+
+.custom-desc {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.custom-cta {
+  flex-shrink: 0;
+}
