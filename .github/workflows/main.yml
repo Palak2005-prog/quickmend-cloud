@@ -33,13 +33,28 @@ jobs:
       - name: Configure SSH
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        shell: bash
         run: |
-          mkdir -p "$HOME/.ssh"
-          printf '%s\n' "$EC2_SSH_KEY" > "$HOME/.ssh/quickmend_key"
-          chmod 600 "$HOME/.ssh/quickmend_key"
-          ssh-keyscan -H "$EC2_HOST" >> "$HOME/.ssh/known_hosts"
+          echo "Step 1: Create SSH directory"
+          mkdir -p "$HOME/.ssh" || exit 11
+
+          echo "Step 2: Check host secret"
+          test -n "$EC2_HOST" || exit 12
+
+          echo "Step 3: Check private key secret"
+          test -n "$EC2_SSH_KEY" || exit 13
+
+          echo "Step 4: Write private key"
+          printf '%s\n' "$EC2_SSH_KEY" > "$HOME/.ssh/quickmend_key" || exit 14
+
+          echo "Step 5: Set key permissions"
+          chmod 600 "$HOME/.ssh/quickmend_key" || exit 15
+
+          echo "Step 6: Scan EC2 host key"
+          ssh-keyscan -H "$EC2_HOST" >> "$HOME/.ssh/known_hosts" || exit 16
+
+          echo "SSH setup completed"
 
       - name: Deploy website
         env:
