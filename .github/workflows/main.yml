@@ -34,11 +34,18 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         shell: bash
-        run: |
-          set -eu
-          mkdir -p "$HOME/.ssh"
+       run: |
+          echo "Checking SSH directory..."
+          mkdir -pv "$HOME/.ssh"
+          echo "Checking EC2 host secret..."
+          test -n "$EC2_HOST"
+          echo "EC2 host secret is present."
+          echo "Checking SSH key secret..."
+          test -n "$EC2_SSH_KEY"
+          echo "SSH key secret is present."
           printf '%s\n' "$EC2_SSH_KEY" > "$HOME/.ssh/quickmend_key"
           chmod 600 "$HOME/.ssh/quickmend_key"
+          echo "SSH key file created."
           ssh-keyscan -H "$EC2_HOST" >> "$HOME/.ssh/known_hosts"
 
       - name: Deploy website
