@@ -21,6 +21,13 @@ export const TrackingTimeline = ({ record }) => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
+      {record.photoUrl && (
+  <img
+    src={record.photoUrl}
+    alt="Repair appliance"
+    className="w-full max-w-md rounded-xl mb-6"
+  />
+)}
       
       {/* Active Status Overview Card */}
       <div className="rounded-3xl bg-gradient-to-br from-[#0B1730] to-[#040E24] border border-[#00E5FF]/40 p-6 sm:p-8 shadow-[0_20px_50px_rgba(2,8,23,0.9),0_0_25px_rgba(0,229,255,0.12)]">

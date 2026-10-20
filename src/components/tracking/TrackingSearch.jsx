@@ -7,6 +7,8 @@ import { TrackingTimeline } from './TrackingTimeline';
 export const TrackingSearch = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { getBookingById, lastCreatedBookingId } = useBooking();
+  const API_URL = 'https://nglgxw2isi.execute-api.ap-south-1.amazonaws.com/prod/';
+  const S3_BUCKET_URL = 'https://quickmend-storage-palak-2026.s3.ap-south-1.amazonaws.com/';
 
   const [repairIdInput, setRepairIdInput] = useState('');
   const [activeRecord, setActiveRecord] = useState(null);
@@ -14,31 +16,63 @@ export const TrackingSearch = () => {
 
   // Check URL query parameter ?id=... or last created booking
   useEffect(() => {
-    const urlId = searchParams.get('id');
-    if (urlId) {
-      setRepairIdInput(urlId);
-      const record = getBookingById(urlId);
-      setActiveRecord(record);
-      setHasSearched(true);
-    } else if (lastCreatedBookingId) {
-      setRepairIdInput(lastCreatedBookingId);
-      const record = getBookingById(lastCreatedBookingId);
-      setActiveRecord(record);
-      setHasSearched(true);
+  const urlId = searchParams.get('id');
+  const id = urlId || lastCreatedBookingId;
+
+  if (id) {
+    setRepairIdInput(id);
+    handleSearchById(id);
+  }
+}, [searchParams, lastCreatedBookingId]);
+const handleSearchById = async (id) => {
+  if (!id || !id.trim()) return;
+
+  const clean = id.trim().toUpperCase();
+
+  try {
+    const response = await fetch(
+      `${API_URL}?bookingId=${encodeURIComponent(clean)}`
+    );
+
+    const data = await response.json();
+
+    if (response.ok && data.success && data.booking) {
+      const booking = data.booking;
+
+      setActiveRecord({
+        ...booking,
+        repairId: booking.bookingId || clean,
+        photoUrl: booking.photoUrl || null,
+        currentStep: 1,
+        currentStatus: booking.status || 'Booking Received',
+        brand: booking.brand || 'Standard Brand',
+        city: booking.city || 'Service Hub',
+        issue: booking.problem || '',
+        pickupType: booking.pickupRequired
+          ? 'Doorstep Pickup & 24h Return'
+          : 'Self-Drop at Hub',
+        assignedTechnician: 'Assigning Local Engineer...',
+      });
+    } else {
+      setActiveRecord(null);
     }
-  }, [searchParams, lastCreatedBookingId]);
+  } catch (error) {
+    console.error('Tracking error:', error);
+    setActiveRecord(null);
+  }
 
-  const handleSearch = (e) => {
-    if (e) e.preventDefault();
-    if (!repairIdInput.trim()) return;
+  setHasSearched(true);
+};
 
-    const clean = repairIdInput.trim().toUpperCase();
-    const record = getBookingById(clean);
-    setActiveRecord(record);
-    setHasSearched(true);
-    setSearchParams({ id: clean });
-  };
+const handleSearch = async (e) => {
+  if (e) e.preventDefault();
+  if (!repairIdInput.trim()) return;
 
+  const clean = repairIdInput.trim().toUpperCase();
+
+  setSearchParams({ id: clean });
+  await handleSearchById(clean);
+};
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       

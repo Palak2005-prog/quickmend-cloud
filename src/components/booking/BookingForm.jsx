@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { 
+import { useBooking } from '../../context/BookingContext';
+import {
   Wrench, 
   User, 
   Phone, 
@@ -18,10 +19,10 @@ import {
   X,
   Zap
 } from 'lucide-react';
+const API_URL = 'https://nglgxw2isi.execute-api.ap-south-1.amazonaws.com/prod/';
 import { statesAndCities } from '../../data/indiaLocations';
 import { applianceOptions, commonBrands } from '../../data/servicesData';
 import { ApplianceIcon } from '../ui/ApplianceIcon';
-import { useBooking } from '../../context/BookingContext';
 import { BookingConfirmation } from './BookingConfirmation';
 import { detectUserLocation } from '../../utils/geolocation';
 import { Locate, Navigation, Sparkles } from 'lucide-react';
@@ -71,7 +72,7 @@ export const BookingForm = () => {
       preferredDate: '',
       preferredTime: 'Morning (09:00 AM - 12:00 PM)',
       pickupRequired: true,
-      photoDataUrl: null,
+      photoDataUrl:null,
       photoFileName: ''
     };
   });
@@ -154,7 +155,7 @@ export const BookingForm = () => {
   };
 
   // Image Upload Handling
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -169,6 +170,34 @@ export const BookingForm = () => {
     }
 
     setErrors(prev => ({ ...prev, photo: '' }));
+    const uploadResponse = await fetch(API_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    action: 'uploadUrl',
+    filename: file.name,
+    contentType: file.type
+  })
+});
+
+const uploadInfo = await uploadResponse.json();
+const s3Response = await fetch(uploadInfo.uploadUrl, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': file.type
+  },
+  body: file
+});
+if (!s3Response.ok) {
+  throw new Error('Photo upload to S3 failed');
+}
+
+setFormData(prev => ({
+  ...prev,
+  photoObjectKey: uploadInfo.objectKey
+}));
     const reader = new FileReader();
     reader.onload = (event) => {
       setFormData(prev => ({
@@ -233,18 +262,18 @@ export const BookingForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit =  (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const finalBrand = formData.brand === 'Other Brand' && formData.customBrand.trim()
         ? formData.customBrand.trim()
         : formData.brand;
 
-      const record = createBooking({
+      const record = await createBooking({
         ...formData,
         brand: finalBrand
       });

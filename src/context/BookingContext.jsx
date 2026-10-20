@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { timelineStages } from '../data/trackingData';
+const API_URL = 'https://nglgxw2isi.execute-api.ap-south-1.amazonaws.com/prod/';
 
 const BookingContext = createContext();
 
@@ -18,18 +19,38 @@ export const BookingProvider = ({ children }) => {
 
   const [lastCreatedBookingId, setLastCreatedBookingId] = useState(null);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem('quickmend_bookings', JSON.stringify(bookings));
-    } catch (e) {
-      console.warn("Local storage not available", e);
-    }
-  }, [bookings]);
 
-  const createBooking = (formData) => {
+  const createBooking = async (formData) => {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
-    const newId = `QM-2026-${randomNum}`;
+  
+   
+    const response = await fetch(API_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+  action: 'createBooking',
+  customerName: formData.fullName,
+  phone: formData.phone,
+  appliance: formData.appliance,
+  problem: formData.problemDescription,
+  brand: formData.brand,
+  city: formData.city,
+  address: formData.address,
+  preferredDate: formData.preferredDate,
+  preferredTime: formData.preferredTime,
+  pickupRequired: formData.pickupRequired,
+photoObjectKey: formData.photoObjectKey
+})
+});
 
+const awsBooking = await response.json();
+
+if (!response.ok || !awsBooking.success) {
+  throw new Error(awsBooking.message || 'AWS booking failed');
+}
+const newId = awsBooking.bookingId;
     const newRecord = {
       repairId: newId,
       customerName: formData.fullName,
@@ -115,12 +136,41 @@ export const BookingProvider = ({ children }) => {
     });
   };
 
-  const getBookingById = (id) => {
-    if (!id) return null;
-    const cleanId = id.trim().toUpperCase();
-    return bookings[cleanId] || null;
-  };
+  const getBookingById = async (id) => {
+  if (!id) return null;
 
+  const cleanId = id.trim().toUpperCase();
+
+  if (bookings[cleanId]) {
+    return bookings[cleanId];
+  }
+
+  try {
+    const response = await fetch(
+      `${API_URL}?bookingId=${encodeURIComponent(cleanId)}`
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success || !data.booking) {
+      return null;
+    }
+
+    const booking = data.booking;
+
+    return {
+      ...booking,
+      repairId: booking.bookingId || cleanId,
+      issue: booking.problem,
+      currentStatus: booking.status || "Booking Received",
+      currentStep: 1,
+      updates: [],
+    };
+  } catch (error) {
+    console.error("AWS tracking error:", error);
+    return null;
+  }
+};
   const getAllBookingsList = () => {
     return Object.values(bookings);
   };
