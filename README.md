@@ -63,3 +63,19 @@ This project provides hands-on practice with cloud hosting, serverless APIs, dat
 
 **Project:** QuickMend  
 **Purpose:** AWS cloud engineering portfolio project
+
+## Architecture Diagram
+
+```mermaid
+flowchart TD
+    A[Customer Browser] --> B[QuickMend Website]
+    B --> C[Amazon EC2 + Nginx]
+    B --> D[Amazon API Gateway]
+    D --> E[AWS Lambda]
+    E --> F[(Amazon DynamoDB)]
+    E --> G[Amazon S3]
+
+    H[GitHub Repository] --> I[GitHub Actions]
+    I --> J[Amazon S3 Deployment Files]
+    J --> K[AWS Systems Manager]
+    K --> C
