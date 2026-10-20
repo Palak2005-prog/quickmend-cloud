@@ -170,6 +170,17 @@ export const BookingForm = () => {
     }
 
     setErrors(prev => ({ ...prev, photo: '' }));
+    const reader = new FileReader();
+
+reader.onload = (event) => {
+  setFormData(prev => ({
+    ...prev,
+    photoDataUrl: event.target.result,
+    photoFileName: file.name
+  }));
+};
+
+reader.readAsDataURL(file);
     const uploadResponse = await fetch(API_URL, {
   method: 'POST',
   headers: {
@@ -198,7 +209,6 @@ setFormData(prev => ({
   ...prev,
   photoObjectKey: uploadInfo.objectKey
 }));
-    const reader = new FileReader();
     reader.onload = (event) => {
       setFormData(prev => ({
         ...prev,
