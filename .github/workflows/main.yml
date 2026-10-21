@@ -46,7 +46,7 @@ jobs:
             --instance-ids i-0aad0d89b57cec783 \
             --document-name AWS-RunShellScript \
             --comment "Deploy QuickMend website" \
-            --parameters 'commands=["set -e","mkdir -p /tmp/quickmend-dist","aws s3 sync s3://quickmend-storage-palak-2026/deploy/ /tmp/quickmend-dist/ --delete","sudo rsync -av --delete /tmp/quickmend-dist/ /var/www/html/","sudo chown -R www-data:www-data /var/www/html","sudo systemctl reload nginx"]' \
+            --parameters '{"commands":["set -e","mkdir -p /tmp/quickmend-dist","aws s3 sync s3://quickmend-storage-palak-2026/deploy/ /tmp/quickmend-dist/ --delete","sudo rsync -av --delete /tmp/quickmend-dist/ /var/www/html/","sudo chown -R www-data:www-data /var/www/html","sudo systemctl reload nginx"]}' \
             --query "Command.CommandId" \
             --output text)
 
