@@ -95,13 +95,6 @@ const handleSearch = async (e) => {
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-[#00E5FF] to-[#00b4d8] hover:to-[#38EFFF] text-[#020817] font-extrabold text-sm shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all flex items-center justify-center gap-2 flex-shrink-0"
-            >
-              <span>TRACK REPAIR</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
           </div>
 
           <p className="text-xs text-[#9FB1C7]">
