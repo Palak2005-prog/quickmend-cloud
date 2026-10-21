@@ -1,81 +1,70 @@
 # QuickMend — Cloud-Based Appliance Repair Platform
 
-QuickMend is a web application for booking and tracking home appliance repair services. This project demonstrates how a React application can be deployed and integrated with AWS cloud services.
+QuickMend is a web application designed to simplify home appliance repair bookings. Customers can submit repair requests, provide appliance details, upload appliance photos, and track their bookings using a unique Repair ID.
+
+The project demonstrates full-stack web development, AWS cloud services, object storage, database integration, and automated deployment.
 
 ## Features
 
-- Book appliance repair services online
-- Generate a unique booking ID
-- Track repair bookings and status
-- Upload appliance photos using Amazon S3
-- Store booking records in Amazon DynamoDB
-- Automatically deploy website updates using GitHub Actions
-
-## AWS Architecture
-
-- **Amazon EC2:** Hosts the website.
-- **Nginx:** Serves the production website.
-- **AWS Systems Manager:** Runs deployment commands on EC2.
-- **Amazon API Gateway:** Receives API requests.
-- **AWS Lambda:** Processes booking, tracking, and upload requests.
-- **Amazon DynamoDB:** Stores booking information.
-- **Amazon S3:** Stores website build files and supports appliance photo uploads.
-- **AWS IAM:** Controls access to AWS resources.
-- **GitHub Actions:** Automates the build and deployment workflow.
+- Appliance repair booking form
+- Unique Repair IDs for bookings
+- Booking tracking
+- Appliance photo uploads
+- Cloud-based booking storage
+- Automated website deployment through GitHub Actions
 
 ## Technology Stack
 
+**Frontend**
 - React
 - JavaScript
 - Vite
-- AWS
-- Python (AWS Lambda)
+- Tailwind CSS
+
+**AWS Cloud Services**
+- Amazon EC2 — website hosting
+- Nginx — web server
+- AWS Lambda — backend processing
+- Amazon API Gateway — HTTP API endpoint
+- Amazon DynamoDB — booking data storage
+- Amazon S3 — website build and appliance photo storage
+- AWS Systems Manager — remote deployment commands
+
+**DevOps and Deployment**
 - Git and GitHub
 - GitHub Actions
-- Nginx
+- Vercel — separate frontend deployment
 
-## Deployment Workflow
+## Architecture Overview
 
-1. Code is pushed to the `main` branch on GitHub.
-2. GitHub Actions installs dependencies and builds the React application.
-3. The generated website files are uploaded to an S3 deployment prefix.
-4. AWS Systems Manager runs the deployment commands on EC2.
-5. Nginx serves the updated website.
+1. Customers access the QuickMend website.
+2. The frontend sends booking requests to Amazon API Gateway.
+3. AWS Lambda processes booking requests.
+4. Booking details are stored in Amazon DynamoDB.
+5. Appliance photos are stored in Amazon S3.
+6. GitHub Actions builds the frontend and automates deployment to the EC2 web server.
 
-## Learning Objectives
+## Deployment
 
-This project provides hands-on practice with cloud hosting, serverless APIs, database integration, IAM permissions, object storage, and CI/CD automation.
+The project uses GitHub for source control and GitHub Actions for automated deployment to AWS EC2. The frontend is also deployed separately on Vercel.
 
-## Security Notes
+## Learning Outcomes
 
-- AWS credentials must be stored in GitHub Actions secrets, never committed to the repository.
-- IAM permissions should follow the principle of least privilege.
-- The public demonstration currently uses HTTP. Do not submit sensitive personal information through the demo until HTTPS is configured.
+- Deploying a frontend application on AWS
+- Integrating a frontend with a serverless API
+- Working with NoSQL database storage
+- Managing file uploads using object storage
+- Automating deployments using CI/CD
+- Using Git and GitHub for version control
 
 ## Future Improvements
 
-- Configure HTTPS
-- Improve API validation and error handling
-- Add monitoring and cost controls
-- Improve production security
+- Authentication and authorization
+- Booking status notifications
+- Improved monitoring and error handling
+- Custom domain and HTTPS configuration
+- More comprehensive automated testing
 
----
+## Project Status
 
-**Project:** QuickMend  
-**Purpose:** AWS cloud engineering portfolio project
-
-## Architecture Diagram
-
-```mermaid
-flowchart TD
-    A[Customer Browser] --> B[QuickMend Website]
-    B --> C[Amazon EC2 + Nginx]
-    B --> D[Amazon API Gateway]
-    D --> E[AWS Lambda]
-    E --> F[(Amazon DynamoDB)]
-    E --> G[Amazon S3]
-
-    H[GitHub Repository] --> I[GitHub Actions]
-    I --> J[Amazon S3 Deployment Files]
-    J --> K[AWS Systems Manager]
-    K --> C
+This project is an ongoing learning and portfolio project focused on cloud engineering and DevOps concepts.
