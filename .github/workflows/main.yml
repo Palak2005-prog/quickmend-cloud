@@ -40,6 +40,7 @@ jobs:
       - name: Upload website build to S3
         run: |
           aws s3 sync dist/ s3://quickmend-storage-palak-2026/deploy/ --delete
+          aws s3 cp dist/index.html s3://quickmend-storage-palak-2026/deploy/index.html
       - name: Deploy website through Systems Manager
         run: |
           COMMAND_ID=$(aws ssm send-command \
