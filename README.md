@@ -68,3 +68,82 @@ The project uses GitHub for source control and GitHub Actions for automated depl
 ## Project Status
 
 This project is an ongoing learning and portfolio project focused on cloud engineering and DevOps concepts.
+
+
+## 🏗️ AWS Architecture
+
+QuickMend is a home appliance repair booking and tracking platform built with a React frontend and AWS cloud services.
+
+### Architecture Overview
+
+```text
+                    CUSTOMER
+                        |
+                        v
+               QuickMend Frontend
+                        |
+                        v
+                 Amazon API Gateway
+                        |
+                        v
+                   AWS Lambda
+                        |
+                        v
+                Amazon DynamoDB
+              (Repair Booking Records)
+
+      Appliance Photos ---> Amazon S3
+
+
+         CI/CD DEPLOYMENT PIPELINE
+
+              GitHub Repository
+                        |
+                        v
+                 GitHub Actions
+                        |
+                        v
+               Amazon S3 (deploy/)
+                        |
+                        v
+             AWS Systems Manager
+                        |
+                        v
+               Amazon EC2 (Ubuntu)
+                        |
+                        v
+                      Nginx
+                        |
+                        v
+                 Website Hosting
+```
+
+### AWS Services Used
+
+| AWS Service | Purpose |
+|---|---|
+| Amazon EC2 | Hosts the website using an Ubuntu server and Nginx |
+| Amazon S3 | Stores appliance photos and deployment build files |
+| AWS Lambda | Processes booking and tracking requests |
+| Amazon API Gateway | Provides API endpoints for the frontend |
+| Amazon DynamoDB | Stores customer repair booking records |
+| AWS Systems Manager (SSM) | Runs deployment commands on EC2 |
+| GitHub Actions | Automates the build and deployment workflow |
+
+### Key Features
+
+- Customer repair booking
+- Repair ID generation and booking tracking
+- Appliance photo support
+- Cloud-based booking data storage
+- Automated website deployment using GitHub Actions
+- EC2 and Nginx website hosting
+
+### Cloud Region
+
+**AWS Region:** Asia Pacific (Mumbai) — `ap-south-1`
+
+### Project Goal
+
+The goal of QuickMend is to demonstrate how a web application can integrate frontend development, serverless backend processing, cloud storage, database management, and CI/CD automation using AWS.
+
